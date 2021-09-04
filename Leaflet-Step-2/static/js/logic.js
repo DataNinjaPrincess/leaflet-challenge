@@ -15,7 +15,7 @@ var basemap = L.tileLayer(
 );
 
 // New: More Maps!
-var satellite = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+var satnav = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
   attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
   tileSize: 512,
   maxZoom: 18,
@@ -38,11 +38,11 @@ var map = L.map("map", {
   center: [40.7, -94.5],
   zoom: 3,
   // but this is new!
-  layers: [basemap, satellite, outdoors]
+  layers: [basemap, satnav, outdoors]
 });
 
 // old: put the map on the map
-basemap.addTo(map);
+satnav.addTo(map);
 
 // New: layering the cake
 var tectonicplates = new L.LayerGroup();
@@ -50,7 +50,7 @@ var earthquakes = new L.LayerGroup();
 
 // New: which map do you want?
 var baseMaps = {
-  Satellite: satellite,
+  Satellite: satnav,
   Grayscale: basemap,
   Outdoors: outdoors
 };
@@ -169,6 +169,17 @@ d3.json(
   legend.addTo(map);
 
 // New: It's not your Fault, lines!
-
+// More Ajax.  I mean Francis
+d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json").then(function(platedata) {
+	
+	L.geoJson(platedata, {
+	  color: "deeppink",
+	  weight: 2
+	})
+	.addTo(tectonicplates);
+  
+	// Then add the tectonicplates layer to the map.
+	tectonicplates.addTo(map);
+      });
   //end of the very long function because I keep losing the stupid thing
 });
