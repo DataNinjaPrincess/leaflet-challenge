@@ -64,6 +64,61 @@ function getRadius(magnitude) {
 	  return 1;
 	}
     	return magnitude * 4;
-	}	    
-//end of the very long function
+	}	
+	
+// Your maps should always wear layers
+  L.geoJson(data, {
+	// making my point(s)
+	pointToLayer: function(feature, latlng) {
+	  return L.circleMarker(latlng);
+	},
+	// MOAR STYLE!
+	style: styleInfo,
+	// True or False:  PopUp>PopTart
+	onEachFeature: function(feature, layer) {
+	  layer.bindPopup(
+	    "Magnitude: "
+	      + feature.properties.mag
+	      + "<br>Depth: "
+	      + feature.geometry.coordinates[2]
+	      + "<br>Location: "
+	      + feature.properties.place
+	  );
+	}
+      }).addTo(map);
+    
+      // Legend of Map sounds like a lame Zelda knockoff
+      var legend = L.control({
+	position: "bottomright"
+      });
+    
+      // Legendary Data
+      legend.onAdd = function() {
+	var div = L.DomUtil.create("div", "info legend");
+    
+	// YET MORE STYLE (make it purdy!)
+	var buckets = [-10, 10, 30, 50, 70, 90];
+	//Oops, they need to be reversed from above!
+	var shade = [
+	  "#98ee00",
+	  "#d4ee00",
+	  "#eecc00",
+	  "#ee9c00",
+	  "#ea822c",
+	  "#ea2c2c"
+	];
+    
+	// Looping through our intervals to generate a label with a colored square for each interval.
+	//WHY ISN"T THIS WORKING!?!?!?!?!
+	for (var i = 0; i < buckets.length; i++) {
+	  div.innerHTML += "<i style='background: " + shade[i] + "'></i> "
+	  + buckets[i] + (buckets[i + 1] ? "&mdash;" + buckets[i + 1] + "<br>" : "+");
+	}
+	return div;
+      };
+    
+      // Put that legend on the map!
+      //legend.addTo(map);
+
+//end of the very long function because I keep losing the stupid thing
 });
